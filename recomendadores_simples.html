@@ -8439,6 +8439,1496 @@ Bibliotecas cargadas correctamente
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=29f74c2e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">linear_kernel</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0a926e38">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crear un mapeo de títulos e índices</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cfe83487">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [37]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_recommendations</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
+
+    <span class="c1"># Obtener el índice de la película</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">title</span><span class="p">]</span>
+
+    <span class="c1"># Calcular similitud con todas las películas</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="n">linear_kernel</span><span class="p">(</span>
+        <span class="n">tfidf_matrix</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">tfidf_matrix</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1"># Crear lista de índices y puntuaciones</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">sim_scores</span><span class="p">))</span>
+
+    <span class="c1"># Ordenar de mayor a menor similitud</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">sim_scores</span><span class="p">,</span>
+        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Obtener las 10 películas más similares</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="n">sim_scores</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
+
+    <span class="c1"># Obtener los índices de las películas</span>
+    <span class="n">movie_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sim_scores</span><span class="p">]</span>
+
+    <span class="c1"># Devolver los títulos</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">movie_indices</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b2a58dd2">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [38]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_recommendations</span><span class="p">(</span><span class="s1">'The Dark Knight Rises'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[38]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>12481                                      The Dark Knight
+150                                         Batman Forever
+1328                                        Batman Returns
+15511                           Batman: Under the Red Hood
+585                                                 Batman
+21194    Batman Unmasked: The Psychology of the Dark Kn...
+9230                    Batman Beyond: Return of the Joker
+18035                                     Batman: Year One
+19792              Batman: The Dark Knight Returns, Part 1
+3095                          Batman: Mask of the Phantasm
+Name: title, dtype: str</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5e443d9b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [39]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_recommendations</span><span class="p">(</span><span class="s1">'The Godfather'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[39]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>1178               The Godfather: Part II
+44030    The Godfather Trilogy: 1972-1990
+1914              The Godfather: Part III
+23126                          Blood Ties
+11297                    Household Saints
+34717                   Start Liquidation
+10821                            Election
+38030            A Mother Should Be Loved
+17729                   Short Sharp Shock
+26293                  Beck 28 - Familjen
+Name: title, dtype: str</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=96c29fdb">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [40]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">credits</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data/credits.csv'</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Archivo cargado correctamente"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dimensiones:"</span><span class="p">,</span> <span class="n">credits</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">credits</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Archivo cargado correctamente
+Dimensiones: (45476, 3)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[40]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>cast</th>
+<th>crew</th>
+<th>id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>[{'cast_id': 14, 'character': 'Woody (voice)',...</td>
+<td>[{'credit_id': '52fe4284c3a36847f8024f49', 'de...</td>
+<td>862</td>
+</tr>
+<tr>
+<th>1</th>
+<td>[{'cast_id': 1, 'character': 'Alan Parrish', '...</td>
+<td>[{'credit_id': '52fe44bfc3a36847f80a7cd1', 'de...</td>
+<td>8844</td>
+</tr>
+<tr>
+<th>2</th>
+<td>[{'cast_id': 2, 'character': 'Max Goldman', 'c...</td>
+<td>[{'credit_id': '52fe466a9251416c75077a89', 'de...</td>
+<td>15602</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6c79546c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Cargar conjuntos de datos adicionales</span>
+
+<span class="n">credits</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data/credits.csv'</span><span class="p">)</span>
+<span class="n">keywords</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data/keywords.csv'</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Archivos cargados correctamente"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Archivos cargados correctamente
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=661085c9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [42]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Eliminar algunos IDs problemáticos</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">19730</span><span class="p">,</span> <span class="mi">29503</span><span class="p">,</span> <span class="mi">35587</span><span class="p">,</span> <span class="mi">35803</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=be99f07e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [43]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Convertir todos los IDs a números enteros</span>
+
+<span class="n">keywords</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">)</span>
+<span class="n">credits</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">credits</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=955ff9b5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [44]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Hacer merges entre DataFrames</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">credits</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">'id'</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">'id'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6906a4a4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [45]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Dimensiones del nuevo DataFrame:"</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Dimensiones del nuevo DataFrame: (46626, 27)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[45]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>adult</th>
+<th>belongs_to_collection</th>
+<th>budget</th>
+<th>genres</th>
+<th>homepage</th>
+<th>id</th>
+<th>imdb_id</th>
+<th>original_language</th>
+<th>original_title</th>
+<th>overview</th>
+<th>...</th>
+<th>spoken_languages</th>
+<th>status</th>
+<th>tagline</th>
+<th>title</th>
+<th>video</th>
+<th>vote_average</th>
+<th>vote_count</th>
+<th>cast</th>
+<th>crew</th>
+<th>keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>False</td>
+<td>{'id': 10194, 'name': 'Toy Story Collection', ...</td>
+<td>30000000</td>
+<td>[{'id': 16, 'name': 'Animation'}, {'id': 35, '...</td>
+<td>http://toystory.disney.com/toy-story</td>
+<td>862</td>
+<td>tt0114709</td>
+<td>en</td>
+<td>Toy Story</td>
+<td>Led by Woody, Andy's toys live happily in his ...</td>
+<td>...</td>
+<td>[{'iso_639_1': 'en', 'name': 'English'}]</td>
+<td>Released</td>
+<td>NaN</td>
+<td>Toy Story</td>
+<td>False</td>
+<td>7.7</td>
+<td>5415.0</td>
+<td>[{'cast_id': 14, 'character': 'Woody (voice)',...</td>
+<td>[{'credit_id': '52fe4284c3a36847f8024f49', 'de...</td>
+<td>[{'id': 931, 'name': 'jealousy'}, {'id': 4290,...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>False</td>
+<td>NaN</td>
+<td>65000000</td>
+<td>[{'id': 12, 'name': 'Adventure'}, {'id': 14, '...</td>
+<td>NaN</td>
+<td>8844</td>
+<td>tt0113497</td>
+<td>en</td>
+<td>Jumanji</td>
+<td>When siblings Judy and Peter discover an encha...</td>
+<td>...</td>
+<td>[{'iso_639_1': 'en', 'name': 'English'}, {'iso...</td>
+<td>Released</td>
+<td>Roll the dice and unleash the excitement!</td>
+<td>Jumanji</td>
+<td>False</td>
+<td>6.9</td>
+<td>2413.0</td>
+<td>[{'cast_id': 1, 'character': 'Alan Parrish', '...</td>
+<td>[{'credit_id': '52fe44bfc3a36847f80a7cd1', 'de...</td>
+<td>[{'id': 10090, 'name': 'board game'}, {'id': 1...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>False</td>
+<td>{'id': 119050, 'name': 'Grumpy Old Men Collect...</td>
+<td>0</td>
+<td>[{'id': 10749, 'name': 'Romance'}, {'id': 35, ...</td>
+<td>NaN</td>
+<td>15602</td>
+<td>tt0113228</td>
+<td>en</td>
+<td>Grumpier Old Men</td>
+<td>A family wedding reignites the ancient feud be...</td>
+<td>...</td>
+<td>[{'iso_639_1': 'en', 'name': 'English'}]</td>
+<td>Released</td>
+<td>Still Yelling. Still Fighting. Still Ready for...</td>
+<td>Grumpier Old Men</td>
+<td>False</td>
+<td>6.5</td>
+<td>92.0</td>
+<td>[{'cast_id': 2, 'character': 'Max Goldman', 'c...</td>
+<td>[{'credit_id': '52fe466a9251416c75077a89', 'de...</td>
+<td>[{'id': 1495, 'name': 'fishing'}, {'id': 12392...</td>
+</tr>
+</tbody>
+</table>
+<p>3 rows × 27 columns</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c938fd56">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [46]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4776abf9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [47]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Convertir cadenas de texto en listas de Python</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5acc06e3">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [48]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">convert</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[48]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>0    [{'id': 16, 'name': 'Animation'}, {'id': 35, '...
+1    [{'id': 12, 'name': 'Adventure'}, {'id': 14, '...
+2    [{'id': 10749, 'name': 'Romance'}, {'id': 35, ...
+3    [{'id': 35, 'name': 'Comedy'}, {'id': 18, 'nam...
+4                       [{'id': 35, 'name': 'Comedy'}]
+Name: genres, dtype: object</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f14c9a10">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [49]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[49]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>0    [{'id': 16, 'name': 'Animation'}, {'id': 35, '...
+1    [{'id': 12, 'name': 'Adventure'}, {'id': 14, '...
+2    [{'id': 10749, 'name': 'Romance'}, {'id': 35, ...
+3    [{'id': 35, 'name': 'Comedy'}, {'id': 18, 'nam...
+4                       [{'id': 35, 'name': 'Comedy'}]
+Name: genres, dtype: object</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=50a7c806">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [50]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Convertir cast, crew y keywords</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'cast'</span><span class="p">,</span> <span class="s1">'crew'</span><span class="p">,</span> <span class="s1">'keywords'</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">convert</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6972f0b4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [51]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">'cast'</span><span class="p">,</span> <span class="s1">'crew'</span><span class="p">,</span> <span class="s1">'keywords'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[51]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>cast</th>
+<th>crew</th>
+<th>keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>[{'cast_id': 14, 'character': 'Woody (voice)',...</td>
+<td>[{'credit_id': '52fe4284c3a36847f8024f49', 'de...</td>
+<td>[{'id': 931, 'name': 'jealousy'}, {'id': 4290,...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>[{'cast_id': 1, 'character': 'Alan Parrish', '...</td>
+<td>[{'credit_id': '52fe44bfc3a36847f80a7cd1', 'de...</td>
+<td>[{'id': 10090, 'name': 'board game'}, {'id': 1...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>[{'cast_id': 2, 'character': 'Max Goldman', 'c...</td>
+<td>[{'credit_id': '52fe466a9251416c75077a89', 'de...</td>
+<td>[{'id': 1495, 'name': 'fishing'}, {'id': 12392...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=35ec9b05">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [52]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Extraer los nombres de cada elemento</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">names</span>
+    <span class="k">return</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ec980b6a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [53]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Obtener los tres actores principales</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_top3</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">names</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=084695fe">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [54]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">'cast'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'cast'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_top3</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">'cast'</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[54]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>0                  [Tom Hanks, Tim Allen, Don Rickles]
+1       [Robin Williams, Jonathan Hyde, Kirsten Dunst]
+2           [Walter Matthau, Jack Lemmon, Ann-Margret]
+3    [Whitney Houston, Angela Bassett, Loretta Devine]
+4           [Steve Martin, Diane Keaton, Martin Short]
+Name: cast, dtype: object</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c4791ea4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [55]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Obtener el nombre del director</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_director</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="s1">'job'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Director'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c675aed0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [56]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Extraer directores de las películas</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">'director'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'crew'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_director</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'director'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[56]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>title</th>
+<th>director</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>Toy Story</td>
+<td>John Lasseter</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Jumanji</td>
+<td>Joe Johnston</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Grumpier Old Men</td>
+<td>Howard Deutch</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Waiting to Exhale</td>
+<td>Forest Whitaker</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Father of the Bride Part II</td>
+<td>Charles Shyer</td>
+</tr>
+<tr>
+<th>5</th>
+<td>Heat</td>
+<td>Michael Mann</td>
+</tr>
+<tr>
+<th>6</th>
+<td>Sabrina</td>
+<td>Sydney Pollack</td>
+</tr>
+<tr>
+<th>7</th>
+<td>Tom and Huck</td>
+<td>Peter Hewitt</td>
+</tr>
+<tr>
+<th>8</th>
+<td>Sudden Death</td>
+<td>Peter Hyams</td>
+</tr>
+<tr>
+<th>9</th>
+<td>GoldenEye</td>
+<td>Martin Campbell</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4e9953a2">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [57]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Extraer nombres de géneros y palabras clave</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_list</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">'keywords'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'keywords'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_list</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'genres'</span><span class="p">,</span> <span class="s1">'keywords'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[57]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>title</th>
+<th>genres</th>
+<th>keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>Toy Story</td>
+<td>[Animation, Comedy, Family]</td>
+<td>[jealousy, toy, boy, friendship, friends, riva...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Jumanji</td>
+<td>[Adventure, Fantasy, Family]</td>
+<td>[board game, disappearance, based on children'...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Grumpier Old Men</td>
+<td>[Romance, Comedy]</td>
+<td>[fishing, best friend, duringcreditsstinger, o...</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Waiting to Exhale</td>
+<td>[Comedy, Drama, Romance]</td>
+<td>[based on novel, interracial relationship, sin...</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Father of the Bride Part II</td>
+<td>[Comedy]</td>
+<td>[baby, midlife crisis, confidence, aging, daug...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1962fb6b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [58]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'director'</span><span class="p">,</span> <span class="s1">'cast'</span><span class="p">,</span> <span class="s1">'genres'</span><span class="p">,</span> <span class="s1">'keywords'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[58]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>title</th>
+<th>director</th>
+<th>cast</th>
+<th>genres</th>
+<th>keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>Toy Story</td>
+<td>John Lasseter</td>
+<td>[Tom Hanks, Tim Allen, Don Rickles]</td>
+<td>[Animation, Comedy, Family]</td>
+<td>[jealousy, toy, boy, friendship, friends, riva...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Jumanji</td>
+<td>Joe Johnston</td>
+<td>[Robin Williams, Jonathan Hyde, Kirsten Dunst]</td>
+<td>[Adventure, Fantasy, Family]</td>
+<td>[board game, disappearance, based on children'...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Grumpier Old Men</td>
+<td>Howard Deutch</td>
+<td>[Walter Matthau, Jack Lemmon, Ann-Margret]</td>
+<td>[Romance, Comedy]</td>
+<td>[fishing, best friend, duringcreditsstinger, o...</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Waiting to Exhale</td>
+<td>Forest Whitaker</td>
+<td>[Whitney Houston, Angela Bassett, Loretta Devine]</td>
+<td>[Comedy, Drama, Romance]</td>
+<td>[based on novel, interracial relationship, sin...</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Father of the Bride Part II</td>
+<td>Charles Shyer</td>
+<td>[Steve Martin, Diane Keaton, Martin Short]</td>
+<td>[Comedy]</td>
+<td>[baby, midlife crisis, confidence, aging, daug...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=169b916b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [59]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Función para limpiar los nombres</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clean_data</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">''</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7552310b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [60]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Limpiar las columnas de actores, director,</span>
+<span class="c1"># géneros y palabras clave</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'cast'</span><span class="p">,</span> <span class="s1">'keywords'</span><span class="p">,</span> <span class="s1">'director'</span><span class="p">,</span> <span class="s1">'genres'</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b9207045">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [61]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'director'</span><span class="p">,</span> <span class="s1">'cast'</span><span class="p">,</span> <span class="s1">'genres'</span><span class="p">,</span> <span class="s1">'keywords'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[61]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>title</th>
+<th>director</th>
+<th>cast</th>
+<th>genres</th>
+<th>keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>Toy Story</td>
+<td>johnlasseter</td>
+<td>[tomhanks, timallen, donrickles]</td>
+<td>[animation, comedy, family]</td>
+<td>[jealousy, toy, boy, friendship, friends, riva...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Jumanji</td>
+<td>joejohnston</td>
+<td>[robinwilliams, jonathanhyde, kirstendunst]</td>
+<td>[adventure, fantasy, family]</td>
+<td>[boardgame, disappearance, basedonchildren'sbo...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Grumpier Old Men</td>
+<td>howarddeutch</td>
+<td>[waltermatthau, jacklemmon, ann-margret]</td>
+<td>[romance, comedy]</td>
+<td>[fishing, bestfriend, duringcreditsstinger, ol...</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Waiting to Exhale</td>
+<td>forestwhitaker</td>
+<td>[whitneyhouston, angelabassett, lorettadevine]</td>
+<td>[comedy, drama, romance]</td>
+<td>[basedonnovel, interracialrelationship, single...</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Father of the Bride Part II</td>
+<td>charlesshyer</td>
+<td>[stevemartin, dianekeaton, martinshort]</td>
+<td>[comedy]</td>
+<td>[baby, midlifecrisis, confidence, aging, daugh...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b485c037">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [62]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Combinar los metadatos de cada película</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_soup</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'keywords'</span><span class="p">])</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span>
+        <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'cast'</span><span class="p">])</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span>
+        <span class="n">x</span><span class="p">[</span><span class="s1">'director'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span>
+        <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">])</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6b3922af">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [63]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crear la metadata soup</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">'soup'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">create_soup</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e5ea0236">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [64]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'soup'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[64]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>title</th>
+<th>soup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>Toy Story</td>
+<td>jealousy toy boy friendship friends rivalry bo...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Jumanji</td>
+<td>boardgame disappearance basedonchildren'sbook ...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Grumpier Old Men</td>
+<td>fishing bestfriend duringcreditsstinger oldmen...</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Waiting to Exhale</td>
+<td>basedonnovel interracialrelationship singlemot...</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Father of the Bride Part II</td>
+<td>baby midlifecrisis confidence aging daughter m...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a7e8039e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [65]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountVectorizer</span>
+
+<span class="n">count</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">stop_words</span><span class="o">=</span><span class="s1">'english'</span><span class="p">)</span>
+
+<span class="n">count_matrix</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'soup'</span><span class="p">])</span>
+
+<span class="n">count_matrix</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[65]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>(46626, 83684)</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=04197e1d">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [66]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a659d540">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [67]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">cosine_sim</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span>
+    <span class="n">count_matrix</span><span class="p">,</span>
+    <span class="n">dense_output</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f385c03b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [68]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">cosine_sim</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[68]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>(46626, 46626)</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9f68e068">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [69]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">indices</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'title'</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=19a2e594">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [70]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_content_recommendations</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
+
+    <span class="c1"># Obtener el índice de la película</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">title</span><span class="p">]</span>
+
+    <span class="c1"># Obtener las similitudes de esa película</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="n">cosine_sim</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1"># Ordenar las películas por similitud</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="nb">enumerate</span><span class="p">(</span><span class="n">sim_scores</span><span class="p">),</span>
+        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Excluir la propia película</span>
+    <span class="n">sim_scores</span> <span class="o">=</span> <span class="n">sim_scores</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
+
+    <span class="c1"># Obtener los índices de las películas recomendadas</span>
+    <span class="n">movie_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sim_scores</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">movie_indices</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4f930afe">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [71]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_content_recommendations</span><span class="p">(</span><span class="s1">'The Dark Knight Rises'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[71]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>12541      The Dark Knight
+10170        Batman Begins
+18866            Last Exit
+34458                 Rege
+9271                Shiner
+40211    Bullet to Beijing
+8994        State of Grace
+11472          Harsh Times
+15004          Harry Brown
+15105             Defendor
+Name: title, dtype: str</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a89da9a3">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [72]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_content_recommendations</span><span class="p">(</span><span class="s1">'The Godfather'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[72]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>1187       The Godfather: Part II
+1926      The Godfather: Part III
+11681    The Consequences of Love
+15534             The Rain People
+5285                  The Gambler
+3315       ...And Justice for All
+4582              The Cotton Club
+18866                   Last Exit
+34458                        Rege
+35772      Manuscripts Don't Burn
+Name: title, dtype: str</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </main>
 </body>
